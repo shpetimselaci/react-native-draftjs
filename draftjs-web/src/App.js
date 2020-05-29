@@ -23,6 +23,7 @@ function App() {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [placeholder, setPlaceholder] = useState("");
   const [editorStyle, setEditorStyle] = useState("");
+  const [readOnly, setReadOnly] = useState(false);
   const [styleMap, setStyleMap] = useState({});
   const [blockRenderMap, setBlockRenderMap] = useState(Map({}));
   const [isMounted, setMountStatus] = useState(false);
@@ -112,6 +113,7 @@ function App() {
         })
       );
     };
+    window.setReadOnly = setReadOnly;
   }, [])
 
 
@@ -131,6 +133,7 @@ function App() {
         handleKeyCommand={handleKeyCommand}
         keyBindingFn={mapKeyToEditorCommand}
         placeholder={placeholder}
+        readOnly={readOnly}
       />
       <EditorController
         editorState={editorState}
