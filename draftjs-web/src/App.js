@@ -47,7 +47,6 @@ function App() {
   const handleKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
-      setEditorState(newState);
       return true;
     }
     return false;
@@ -70,11 +69,11 @@ function App() {
     }
   };
   const toggleBlockType = blockType => {
-    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
+    setEditorState(prevEditorState => RichUtils.toggleBlockType(prevEditorState, blockType));
   };
 
   const toggleInlineStyle = inlineStyle => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+    setEditorState(prevEditorState => RichUtils.toggleInlineStyle(prevEditorState, inlineStyle));
   };
 
   useEffect(() => {
