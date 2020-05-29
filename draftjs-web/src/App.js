@@ -66,7 +66,7 @@ function App() {
         return;
       case 13:
         window.scrollBy({
-          top: 20,
+          top: 18,
           behavior: 'smooth',
         });
       default:
@@ -121,7 +121,16 @@ function App() {
 
 
   const customBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
-
+  const postState = (newState) => new Promise((resolve) => {
+    if(window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({
+          editorState: convertToRaw(newState.getCurrentContent()),
+        })
+      );
+      resolve();
+    }
+    });
   return (
     <>
       <style>
@@ -132,18 +141,7 @@ function App() {
         customStyleMap={styleMap}
         blockRenderMap={customBlockRenderMap}
         editorState={editorState}
-        onChange={(newState) => {
-          new Promise((resolve) => {
-            window.ReactNativeWebView.postMessage(
-              JSON.stringify({
-                editorState: convertToRaw(newState.getCurrentContent()),
-              })
-            );
-            resolve();
-          })
-          setEditorState(newState);
-
-        }}
+        onChange={(newState) => {postState(newState); setEditorState(newState)}}
         handleKeyCommand={handleKeyCommand}
         keyBindingFn={mapKeyToEditorCommand}
         placeholder={placeholder}
