@@ -40,9 +40,8 @@ class RNDraftView extends Component {
   };
 
   setReadOnly = bool => this.executeScript("setReadOnly", bool);
-  getEditorState = () => {
-    this.executeScript("getEditorStyle");
-  };
+  getEditorState = () => this.state.editorState;
+
 
 
   _onMessage = event => {
