@@ -68,14 +68,17 @@ function App() {
         return getDefaultKeyBinding(e);
     }
   };
+  const toggleBlockType = blockType => {
+    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
+  };
+
+  const toggleInlineStyle = inlineStyle => {
+    setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+  };
 
   useEffect(() => {
-    window.toggleBlockType = blockType => {
-      setEditorState(RichUtils.toggleBlockType(editorState, blockType));
-    };;
-    window.toggleInlineStyle = inlineStyle => {
-      setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
-    };;
+    window.toggleBlockType = toggleBlockType;
+    window.toggleInlineStyle =toggleInlineStyle;
     window.setDefaultValue = raw => {
       try {
         if (raw) {
