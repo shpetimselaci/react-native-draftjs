@@ -68,8 +68,7 @@ function App() {
         window.scrollBy({
           top: 20,
           behavior: 'smooth',
-        })
-        break;
+        });
       default:
         return getDefaultKeyBinding(e);
     }
