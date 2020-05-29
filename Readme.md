@@ -60,7 +60,7 @@ _iOS installation does not require any additional steps._
 | blur           | -                                                                                                                                                           | removes focus from the rich text editor                                                                                                      |
 | setStyle       | `BOLD`, `ITALIC`, `UNDERLINE` and `CODE`                                                                                                                    | call this instance method to apply a style to the selected/active text. Call this again with the same style to remove it.                    |
 | setBlockType   | Supports the default block types supported by draft.js [editor](https://github.com/facebook/draft-js/blob/master/src/component/utils/DraftStyleDefault.css) | Call this instance method to apply and call it again to remove the style.                                                                    |
-| getEditorState | -                                                                                                                                                           | Returns the current editor state as a HTML string exported using [draft-js-export-html](https://www.npmjs.com/package/draft-js-export-html). |
+| getEditorState | -                                                                                                                                                           | Returns the current editor raw state |
 
 ## Sample Usage
 
