@@ -64,6 +64,12 @@ function App() {
           setEditorState(newEditorState);
         }
         return;
+      case 13:
+        window.scrollBy({
+          top: 20,
+          behavior: 'smooth',
+        })
+        break;
       default:
         return getDefaultKeyBinding(e);
     }
