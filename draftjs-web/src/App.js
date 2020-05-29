@@ -111,13 +111,6 @@ function App() {
         console.error(e);
       }
     };
-    window.getEditorState = () => {
-      window.ReactNativeWebView.postMessage(
-        JSON.stringify({
-          editorState: convertToRaw(editorState.getCurrentContent()),
-        })
-      );
-    };
     window.setReadOnly = (bool) => {
       try {
         setReadOnly(JSON.parse(bool));
@@ -140,7 +133,18 @@ function App() {
         customStyleMap={styleMap}
         blockRenderMap={customBlockRenderMap}
         editorState={editorState}
-        onChange={setEditorState}
+        onChange={(newState) => {
+          new Promise((resolve) => {
+            window.ReactNativeWebView.postMessage(
+              JSON.stringify({
+                editorState: convertToRaw(newState.getCurrentContent()),
+              })
+            );
+            resolve();
+          })
+          setEditorState(newState);
+
+        }}
         handleKeyCommand={handleKeyCommand}
         keyBindingFn={mapKeyToEditorCommand}
         placeholder={placeholder}
