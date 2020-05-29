@@ -4,10 +4,10 @@ import {
   EditorState,
   RichUtils,
   getDefaultKeyBinding,
-  DefaultDraftBlockRenderMap
+  DefaultDraftBlockRenderMap,
+  convertFromRaw,
+  convertToRaw
 } from "draft-js";
-import { stateFromHTML } from "draft-js-import-html";
-import { stateToHTML } from "draft-js-export-html";
 import { Map } from "immutable";
 import EditorController from "./Components/EditorController/EditorController";
 
@@ -69,70 +69,48 @@ function App() {
     }
   };
 
-  const toggleBlockType = blockType => {
-    setEditorState(RichUtils.toggleBlockType(editorState, blockType));
-  };
-
-  const toggleInlineStyle = inlineStyle => {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
-  };
-
-  const setDefaultValue = html => {
-    try {
-      if (html) {
-        setEditorState(EditorState.createWithContent(stateFromHTML(html)));
+  useEffect(() => {
+    window.toggleBlockType = blockType => {
+      setEditorState(RichUtils.toggleBlockType(editorState, blockType));
+    };;
+    window.toggleInlineStyle = inlineStyle => {
+      setEditorState(RichUtils.toggleInlineStyle(editorState, inlineStyle));
+    };;
+    window.setDefaultValue = raw => {
+      try {
+        if (raw) {
+          setEditorState(EditorState.createWithContent(convertFromRaw(raw)));
+        }
+      } catch (e) {
+        console.error(e);
       }
-    } catch (e) {
-      console.error(e);
-    }
-  };
+    };
+    window.setEditorPlaceholder = setPlaceholder;
+    window.setEditorStyleSheet = setEditorStyle;
+    window.setEditorStyleMap = setStyleMap;
+    window.focusTextEditor = () => {
+      _draftEditorRef.current && _draftEditorRef.current.focus();
+    };
+    window.blurTextEditor =  () => {
+      _draftEditorRef.current && _draftEditorRef.current.blur();
+    };
+    window.setEditorBlockRenderMap = renderMapString => {
+      try {
+        setBlockRenderMap(Map(JSON.parse(renderMapString)));
+      } catch (e) {
+        setBlockRenderMap(Map({}));
+        console.error(e);
+      }
+    };
+    window.getEditorState = () => {
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({
+          editorState: convertToRaw(editorState.getCurrentContent()),
+        })
+      );
+    };
+  }, [])
 
-  const setEditorPlaceholder = placeholder => {
-    setPlaceholder(placeholder);
-  };
-
-  const setEditorStyleSheet = styleSheet => {
-    setEditorStyle(styleSheet);
-  };
-
-  const setEditorStyleMap = editorStyleMap => {
-    setStyleMap(editorStyleMap);
-  };
-
-  const focusTextEditor = () => {
-    _draftEditorRef.current && _draftEditorRef.current.focus();
-  };
-
-  const blurTextEditor = () => {
-    _draftEditorRef.current && _draftEditorRef.current.blur();
-  };
-
-  const setEditorBlockRenderMap = renderMapString => {
-    try {
-      setBlockRenderMap(Map(JSON.parse(renderMapString)));
-    } catch (e) {
-      setBlockRenderMap(Map({}));
-      console.error(e);
-    }
-  };
-
-  window.toggleBlockType = toggleBlockType;
-  window.toggleInlineStyle = toggleInlineStyle;
-  window.setDefaultValue = setDefaultValue;
-  window.setEditorPlaceholder = setEditorPlaceholder;
-  window.setEditorStyleSheet = setEditorStyleSheet;
-  window.setEditorStyleMap = setEditorStyleMap;
-  window.focusTextEditor = focusTextEditor;
-  window.blurTextEditor = blurTextEditor;
-  window.setEditorBlockRenderMap = setEditorBlockRenderMap;
-
-  if (window.ReactNativeWebView) {
-    window.ReactNativeWebView.postMessage(
-      JSON.stringify({
-        editorState: stateToHTML(editorState.getCurrentContent())
-      })
-    );
-  }
 
   const customBlockRenderMap = DefaultDraftBlockRenderMap.merge(blockRenderMap);
 
