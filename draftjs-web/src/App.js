@@ -113,7 +113,13 @@ function App() {
         })
       );
     };
-    window.setReadOnly = setReadOnly;
+    window.setReadOnly = (bool) => {
+      try {
+        setReadOnly(JSON.parse(bool));
+      } catch (err) {
+        //
+      }
+    };
   }, [])
 
 

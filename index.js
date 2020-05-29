@@ -39,9 +39,11 @@ class RNDraftView extends Component {
     this.executeScript("toggleInlineStyle", style);
   };
 
+  setReadOnly = bool => this.executeScript("setReadOnly", bool);
   getEditorState = () => {
-    return this.state.editorState;
+    this.executeScript("getEditorStyle");
   };
+
 
   _onMessage = event => {
     const {
@@ -51,10 +53,14 @@ class RNDraftView extends Component {
     const { data } = event.nativeEvent;
     const { blockType, styles, editorState, isMounted } = JSON.parse(data);
     onStyleChanged(styles ? styles.split(",") : []);
-    if (blockType) onBlockTypeChanged(blockType);
+    if (blockType) {
+      onBlockTypeChanged(blockType);
+    }
     if (editorState)
-      this.setState({ editorState: editorState.replace(/(\r\n|\n|\r)/gm, "") });
-    if (isMounted) this.widgetMounted();
+      this.setState({ editorState });
+    if (isMounted) {
+      this.widgetMounted();
+    }
   };
 
   widgetMounted = () => {
@@ -64,7 +70,8 @@ class RNDraftView extends Component {
       styleSheet,
       styleMap,
       blockRenderMap,
-      onEditorReady = () => null
+      onEditorReady = () => null,
+      readOnly
     } = this.props;
     if (defaultValue) {
       this.executeScript("setDefaultValue", defaultValue);
@@ -78,6 +85,16 @@ class RNDraftView extends Component {
     if (styleMap) {
       try {
         this.executeScript("setEditorStyleMap", JSON.stringify(styleMap));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    if(readOnly) {
+      try {
+        this.executeScript(
+          "setReadOnly",
+          "true"
+        );
       } catch (e) {
         console.error(e);
       }
